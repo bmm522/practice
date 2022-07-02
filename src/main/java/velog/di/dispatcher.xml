@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    
+    <!--  plus pluslogic = new plusLogic(); -->
+	<bean id = "pluslogic" class = "velog.di.plusLogic"></bean>        
+    
+    <!-- print printlogic = new printLogic(plusLogic); -->
+    <bean id = "printlogic" class = "velog.di.printLogic">
+    	<!-- printlogic.setPlusLoigc(pluslogic); -->
+    	<property name = "plusLogic" ref = "pluslogic"></property>
+    </bean>    
+        
+        
+</beans>
+        
