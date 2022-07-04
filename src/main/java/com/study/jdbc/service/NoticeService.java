@@ -12,15 +12,26 @@ import java.util.List;
 import com.study.jdbc.entity.Notice;
 
 public class NoticeService {
+	private String url = "jdbc:oracle:thin:@localhost:1521/xe";
+	private String uid = "c##bmm522";
+	private String upwd = "1234";
+	private String driver = "oracle.jdbc.driver.OracleDriver";
 	
-	public List<Notice> getList() throws ClassNotFoundException, SQLException{
-		String url = "jdbc:oracle:thin:@localhost:1521/xe";
-		String sql = "SELECT * FROM MEMBER";
+	
+	public List<Notice> getList(int page, String field, String query) throws ClassNotFoundException, SQLException{
+		int start = 1+(page-1)*3;
+		int end = 3*page;
 		
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection con = DriverManager.getConnection(url, "c##bmm522", "1234");
-		Statement st = con.createStatement();
-		ResultSet rs = st.executeQuery(sql);
+		String sql = "SELECT * FROM MEMBER_VIEW "
+				+ "WHERE "+ field+ " LIKE ? AND NUM BETWEEN ? AND ?";
+		
+		Class.forName(driver);
+		Connection con = DriverManager.getConnection(url, uid, upwd);
+		PreparedStatement st = con.prepareStatement(sql);
+		st.setString(1, "%"+query+"%");
+		st.setInt(2, start);
+		st.setInt(3, end);
+		ResultSet rs = st.executeQuery();
 		
 		
 		List<Notice> list = new ArrayList<Notice>();
@@ -35,16 +46,28 @@ public class NoticeService {
 			list.add(notice);
 		}
 		
-
-		
-		
-		
-		
 		rs.close();
 		st.close();
 		con.close();
 		
 		return list;
+	}
+	
+	//Scalar : 단위값
+	public int getCount() throws ClassNotFoundException, SQLException {
+		int count = 0;
+		String sql = "SELECT COUNT(ID) FROM MEMBER";
+			
+		Class.forName(driver);
+		Connection con = DriverManager.getConnection(url, uid, upwd);
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery(sql);
+			
+		while(rs.next()){
+		count = rs.getInt("COUNT(ID)");
+		}
+			
+		return count;
 	}
 	
 	public int insert(Notice notice) throws ClassNotFoundException, SQLException {
@@ -54,15 +77,15 @@ public class NoticeService {
 		
 		
 		
-		String url = "jdbc:oracle:thin:@localhost:1521/xe";
+		
 		String sql = "INSERT INTO member ("
 				+ "    id,"
 				+ "    pwd,"
 				+ "    name "
 				+ ") VALUES (?,?,?)";
 		
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection con = DriverManager.getConnection(url, "c##bmm522", "1234");
+		Class.forName(driver);
+		Connection con = DriverManager.getConnection(url, uid, upwd);
 
 		PreparedStatement st = con.prepareStatement(sql);
 		
@@ -89,7 +112,7 @@ public class NoticeService {
 		int uniquenumber = notice.getUniquenumber();
 		
 		
-		String url = "jdbc:oracle:thin:@localhost:1521/xe";
+		
 		String sql = "UPDATE MEMBER "
 				+ " SET"
 				+ "    ID=?,"
@@ -97,8 +120,8 @@ public class NoticeService {
 				+ " NAME=?"
 				+ "WHERE UNIQUENUMBER=?";
 		
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection con = DriverManager.getConnection(url, "c##bmm522", "1234");
+		Class.forName(driver);
+		Connection con = DriverManager.getConnection(url, uid, upwd);
 
 		PreparedStatement st = con.prepareStatement(sql);
 		
@@ -123,11 +146,11 @@ public class NoticeService {
 	public int delete(int uniquenumber) throws ClassNotFoundException, SQLException {
 		
 		
-		String url = "jdbc:oracle:thin:@localhost:1521/xe";
+	
 		String sql = "DELETE MEMBER WHERE UNIQUENUMBER=?";
 		
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		Connection con = DriverManager.getConnection(url, "c##bmm522", "1234");
+		Class.forName(driver);
+		Connection con = DriverManager.getConnection(url, uid, upwd);
 	
 		PreparedStatement st = con.prepareStatement(sql);
 	
@@ -142,4 +165,6 @@ public class NoticeService {
 		return result;
 		
 	}
+	
+	
 }
