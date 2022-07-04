@@ -144,9 +144,6 @@ public class NoticeService {
 	}
 	
 	public int delete(int uniquenumber) throws ClassNotFoundException, SQLException {
-		
-		
-	
 		String sql = "DELETE MEMBER WHERE UNIQUENUMBER=?";
 		
 		Class.forName(driver);
