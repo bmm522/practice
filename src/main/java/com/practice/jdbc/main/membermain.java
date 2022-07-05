@@ -16,8 +16,10 @@ public class membermain {
 			int choice = mc.printMenuList();
 			switch(choice) { //printMenuList로부터 받은 choice번호를 구분하여 명령을 실행하는 switch문
 			case 1: // 이전페이지를 명령하는 숫자
+				mc.printPrevList();
 				break;
 			case 2: // 다음페이지를 명령하는 숫자
+				mc.printNextList();
 				break;
 			case 3: // 검색을 명령하는 숫자
 				break;

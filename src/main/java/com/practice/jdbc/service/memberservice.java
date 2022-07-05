@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,6 +128,25 @@ public class memberservice {
 	    
 		st.close();
 		con.close();
+	}
+
+	public int getTotal() throws ClassNotFoundException, SQLException {
+		int totaldatacount = 0; // 데이터의 총 갯수를 담기위한 변수 선언
+		
+		String sql = "SELECT COUNT(UNIQUENUMBER) FROM MEMBER";
+		//UNIQUENUMBER는 데이터의 갯수만큼 생성되기 때문에 UNIQUENUMBER을 카운트함.
+		
+		Class.forName(driver);
+		Connection con = DriverManager.getConnection(url, uid, upwd);
+		Statement st = con.createStatement();
+		ResultSet rs = st.executeQuery(sql);//그 값을 객체에 담기 위해 사용
+		
+		rs.next(); //열이 하나밖에 없기때문에 한번만 탐색해도 괜찮음.
+		
+		totaldatacount=rs.getInt("COUNT(UNIQUENUMBER)"); 
+		// 총 갯수의 값을 totaldatacount값에 담음.
+		
+		return totaldatacount;
 	}
 	
 	

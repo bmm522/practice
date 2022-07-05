@@ -22,11 +22,19 @@ public class MemberConsole {
 	public void printMemberList() throws ClassNotFoundException, SQLException {
 		List<member> list = ms.getMember(checknumber);
 		// memberservice.getMember에서 아웃된 리스트를 담을 리스트
+		int totaldata = ms.getTotal(); // 전체데이터값을 가져오는 메서드
 		
+		int endPageNumber = totaldata/3; //전체 데이터에서 3으로 나눈 값을 넣어줌.
+		
+		if(totaldata%3 !=0) { //3으로 나눈값이 나머지가 있을 경우에 endPageNumber에 1을 추가
+			endPageNumber ++;
+		}
+		
+		System.out.printf("등록된 총 ID : %d", totaldata);
 		System.out.println("-----------------------------------------------");
 		list.forEach(m -> System.out.printf("ID: %s, PWD: %s, NAME: %s\n", m.getId(), m.getPwd(), m.getName()));
 		System.out.println("-----------------------------------------------");
-		System.out.println("           현재페이지 / 끝페이지");
+		System.out.printf("                 %d / %d\n", checknumber, endPageNumber);
 	}
 
 	public int printMenuList() {
@@ -40,6 +48,19 @@ public class MemberConsole {
 		
 		return choice;
 		//입력받은 숫자를 아웃함.
+	}
+
+	public void printPrevList() {
+		if(checknumber ==1) {
+			System.out.println("이전 페이지가 없음");
+			return;
+		}
+		checknumber --;	
+	}
+
+	public void printNextList() {
+		
+		
 	}
 	
 	
