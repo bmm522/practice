@@ -5,12 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.practice.jdbc.entity.member;
-import com.study.jdbc.entity.Notice;
 
 public class memberservice {
 	
@@ -20,14 +18,19 @@ public class memberservice {
 	private String driver = "oracle.jdbc.driver.OracleDriver";
 	// 이 클래스 내에서 계속 사용되야 할 것이므로 멤버변수로 지정.
 	//드라이브를 실행할때마다 불러주고 그 해당 로직이 끝나면 종료되게끔 하기.(메모리부담 덜주기)
-	public List<member> getMember() throws ClassNotFoundException, SQLException{
-		
-		String sql = "SELECT * FROM MEMBER";
+	public List<member> getMember(int checknumber) throws ClassNotFoundException, SQLException{
+		int startUniqueNumber = 1+(checknumber-1)*3; //1, 4, 7, 10 ... 으로 가는 식
+		int endUniqueNumber = checknumber*3;//3, 6, 9, 12 ... 으로가는 식
+		String sql = "SELECT * FROM MEMBER WHERE UNIQUENUMBER BETWEEN ? AND ?";
 		
 		Class.forName(driver);
 		Connection con = DriverManager.getConnection(url, uid, upwd);
-		Statement st = con.createStatement();
-		ResultSet rs = st.executeQuery(sql);
+		PreparedStatement st = con.prepareStatement(sql); // sql 구문에 값을 꽂아 넣기 위한 준비
+		
+		st.setInt(1, startUniqueNumber); // 첫번째 ?의 값에 꽂아 넣기
+		st.setInt(2, endUniqueNumber); // 두번째 ?의 값에 꽂아 넣기
+		
+		ResultSet rs = st.executeQuery(); // 꽂아진 데이터를 사용하기 위해 ResultSet객체에 담기
 		
 		List<member> list = new ArrayList<member>(); //각자 테이블에서 추출한 값을 담아줄 리스트
 		while(rs.next()) { //테이블의 마지막까지 탐색
@@ -35,6 +38,7 @@ public class memberservice {
 			String pwd = rs.getString("PWD");
 			String name = rs.getString("NAME");
 			int uniquenumber = rs.getInt("UNIQUENUMBER");
+			
 // ------------------여기까지 추출을 하고--------------------------
 			
 			member member = new member(id, pwd, name, uniquenumber); // member에 추출한 값 담기
@@ -127,8 +131,5 @@ public class memberservice {
 	
 	
 	
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		memberservice ms = new memberservice();
-		System.out.println(ms.getMember());
-	}
+	
 }
