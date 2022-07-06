@@ -22,6 +22,7 @@ public class membermain {
 				mc.printNextList();
 				break;
 			case 3: // 검색을 명령하는 숫자
+				mc.searchId();
 				break;
 			case 4: // 종료를 명령하는 숫자
 				System.out.println("----------------");
